@@ -10,13 +10,17 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_10_14_185332) do
-  create_table "friends", charset: "utf8", force: :cascade do |t|
-    t.string "name"
-    t.integer "phone"
-    t.string "twitter"
-    t.string "email"
-    t.string "location"
+ActiveRecord::Schema[7.0].define(version: 2022_10_19_163039) do
+  create_table "portfolios", charset: "utf8", force: :cascade do |t|
+    t.integer "user_id"
+    t.string "symbol"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "stocks", charset: "utf8", force: :cascade do |t|
+    t.integer "portfolio_id"
+    t.string "symbol"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
