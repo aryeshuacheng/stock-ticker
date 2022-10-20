@@ -37,14 +37,16 @@ class Api::V1::StocksController < ApplicationController
 
   def buy_stock
     price_quote = StockQuote::Stock.quote(player_params['symbol'])
-    cost_of_purchase = price_quote.latest_price * 1
+    shares_quantity = player_params['shares_quantity'].to_i
+
+    cost_of_purchase = price_quote.latest_price * shares_quantity
 
     if @player.available_cash > cost_of_purchase
       @player.update(available_cash: @player.available_cash - cost_of_purchase)
 
       stock = Stock.where(portfolio_id: @portfolio.id, symbol: player_params['symbol']).first
       if stock.present?
-        updated_quantity = stock.shares + 1
+        updated_quantity = stock.shares + shares_quantity
         stock.update(shares: updated_quantity)
       end
 
@@ -56,15 +58,16 @@ class Api::V1::StocksController < ApplicationController
 
   def sell_stock
     price_quote = StockQuote::Stock.quote(player_params['symbol'])
-    cost_of_sale = price_quote.latest_price * 1
+    shares_quantity = player_params['shares_quantity'].to_i
+
+    cost_of_sale = price_quote.latest_price * shares_quantity
 
     stock = Stock.where(portfolio_id: @portfolio.id, symbol: player_params['symbol']).first
 
     if stock.present?
-
       stock = Stock.where(portfolio_id: @portfolio.id, symbol: player_params['symbol']).first
-      if stock.present? && stock.shares  > 0
-        updated_quantity = stock.shares - 1
+      if stock.present? && stock.shares - shares_quantity  >= 0
+        updated_quantity = stock.shares - shares_quantity
         @player.update(available_cash: @player.available_cash + cost_of_sale)
         stock.update(shares: updated_quantity)
       end
@@ -82,6 +85,6 @@ class Api::V1::StocksController < ApplicationController
   private
 
   def player_params
-    params.permit(:name,:symbol,:quantity_of_shares_to_purchase)
+    params.permit(:name,:symbol,:shares_quantity)
   end
 end
