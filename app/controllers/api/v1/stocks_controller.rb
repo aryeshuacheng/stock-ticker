@@ -23,7 +23,16 @@ class Api::V1::StocksController < ApplicationController
   end
 
   def add_stock_to_portfolio
-    Stock.find_or_create_by(symbol: (params[:symbol]), portfolio_id: @player.portfolio.id, shares: 0)
+    Stock.find_or_create_by(symbol: (player_params[:symbol]), portfolio_id: @player.portfolio.id, shares: 0)
+  end
+
+  def remove_stock_from_portfolio
+    stock =  Stock.where(symbol: player_params[:symbol], portfolio_id: @portfolio.id).first
+
+    if stock.present?
+      sell_stock
+      stock.delete
+    end
   end
 
   def buy_stock
