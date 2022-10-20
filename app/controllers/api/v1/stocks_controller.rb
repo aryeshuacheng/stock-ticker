@@ -61,11 +61,11 @@ class Api::V1::StocksController < ApplicationController
     stock = Stock.where(portfolio_id: @portfolio.id, symbol: player_params['symbol']).first
 
     if stock.present?
-      @player.update(available_cash: @player.available_cash + cost_of_sale)
 
       stock = Stock.where(portfolio_id: @portfolio.id, symbol: player_params['symbol']).first
-      if stock.present?
+      if stock.present? && stock.shares  > 0
         updated_quantity = stock.shares - 1
+        @player.update(available_cash: @player.available_cash + cost_of_sale)
         stock.update(shares: updated_quantity)
       end
 
