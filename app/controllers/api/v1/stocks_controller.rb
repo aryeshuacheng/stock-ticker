@@ -1,4 +1,5 @@
 class Api::V1::StocksController < ApplicationController
+  before_action :login
 
   def login
     @player = Player.where(name: player_params['name']).first_or_create
@@ -6,7 +7,7 @@ class Api::V1::StocksController < ApplicationController
   end
 
   def get_quotes
-    login
+
 
     quotes = []
 
@@ -24,7 +25,6 @@ class Api::V1::StocksController < ApplicationController
   end
 
   def add_stock_to_portfolio
-    login
 
     Stock.find_or_create_by(symbol: (params[:symbol]), portfolio_id: @player.portfolio.id, shares: 0)
   end
@@ -35,6 +35,10 @@ class Api::V1::StocksController < ApplicationController
 
   def sell_stock
 
+  end
+
+  def available_cash
+    render json: @player.available_cash, status: :ok
   end
 
   private
