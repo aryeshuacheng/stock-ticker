@@ -10,10 +10,17 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_10_19_163039) do
+ActiveRecord::Schema[7.0].define(version: 2022_10_19_194417) do
+  create_table "players", charset: "utf8", force: :cascade do |t|
+    t.string "name"
+    t.float "available_cash", default: 10000.0
+    t.integer "portfolio_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "portfolios", charset: "utf8", force: :cascade do |t|
-    t.integer "user_id"
-    t.string "symbol"
+    t.integer "player_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -21,6 +28,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_10_19_163039) do
   create_table "stocks", charset: "utf8", force: :cascade do |t|
     t.integer "portfolio_id"
     t.string "symbol"
+    t.integer "shares"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

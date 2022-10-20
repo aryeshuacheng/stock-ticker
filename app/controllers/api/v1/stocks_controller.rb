@@ -1,15 +1,18 @@
 class Api::V1::StocksController < ApplicationController
-  before_action :initialize
 
-  def initialize
-    StockQuote::Stock.new(api_key: 'pk_717dbfab4f594f76b94a16a7db3a7917')
+  def login
+    @player = Player.where(name: player_params['name']).first_or_create
+    @portfolio = Portfolio.where(player: @player).first_or_create
   end
 
   def get_quotes
-    stocks = Portfolio.find(1).stocks
+    login
+
     quotes = []
 
-    stocks.each do |stock|
+    @stocks = @player.portfolio.stocks
+
+    @stocks.each do |stock|
       quotes << StockQuote::Stock.quote(stock.symbol)
     end
 
@@ -21,6 +24,22 @@ class Api::V1::StocksController < ApplicationController
   end
 
   def add_stock_to_portfolio
-    Stock.create(symbol: (params[:symbol]), portfolio_id: 1)
+    login
+
+    Stock.find_or_create_by(symbol: (params[:symbol]), portfolio_id: @player.portfolio.id, shares: 0)
+  end
+
+  def buy_stock
+
+  end
+
+  def sell_stock
+
+  end
+
+  private
+
+  def player_params
+    params.permit(:name,:symbol)
   end
 end
